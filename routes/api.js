@@ -1,17 +1,19 @@
 const express = require('express');
-const Router = require('express-promise-router');
-//const router = express.Router();
-const pg = require('pg');
+//const Router = require('express-promise-router');
+const router = express.Router();
+const pgp = require('pg-promise')();
 
-const pool = new pg.Pool({
+const cn = {
     user: 'maxime',
     host: 'localhost',
     database: 'maximedb',
     password: 'maxime',
     port: 5432,
-});
+};
+const db = pgp(cn);
 
-const router = new Router();
+
+//const router = new Router();
 /*
     @ ROUTE : /apiv1/
     @ DESC: Return the homepage
@@ -24,52 +26,88 @@ router.get('/', async (req, res, next) => {
 
 
 /*
-    @ ROUTE : /apiv1/classement/date/:page
+    @ ROUTE : /oldfic/date/:page
     @ DESC: Return fics infos from the database order by date
-    @ TODO : Verification de la page
 */
-router.get('/classement/date/:page', async (req, res, next) => {
+router.get('/oldfic/date/:page', (req, res, next) => {
 
-    let request = {
-        text: "SELECT * FROM fics ORDER BY id LIMIT 25 OFFSET $1",
-        values: [req.params.page * 25]
-    };
+    if (isNaN(req.params.page)) {
+        res.status(400).send({"error": 400, "info": "invalid argument page", "htmlcat": "https://http.cat/400.jpg"})
+    } else {
 
-    await pool.query(request, (err, response) => {
-        if (err) throw err.stack;
-        //console.log(response.rows);
-        res.send(response.rows);
-    })
-
+        db.any("SELECT * FROM fics ORDER BY date DESC LIMIT 25 OFFSET $1", [req.params.page])
+            .then((data) => {
+                res.status(200).json(data)
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send({"error": 500, "info": "SQL error", "htmlcat": "https://http.cat/500"})
+            })
+    }
 });
 
 /*
-    @ ROUTE : /apiv1/classement/note/:page
+    @ ROUTE : /oldfic/grade/:page
     @ DESC : Return fics infos from the database order by user reviews
-    @ TODO : Verifiaction de la page
  */
-router.get('/classement/grade/:page', async (req, res, next) => {
-    let request = {
-        text: "SELECT * FROM fics ORDER BY datetime DESC LIMIT $1+25 OFFSET $1"
+router.get('/oldfic/grade/:page', (req, res, next) => {
+
+    if (isNaN(req.params.page)) {
+        res.status(400).send({"error": 400, "info": "invalid argument page", "htmlcat": "https://http.cat/400.jpg"})
+    } else {
+
+        db.any("SELECT * FROM fics ORDER BY note DESC LIMIT 25 OFFSET $1", [req.params.page])
+            .then((data) => {
+                res.status(200).json(data)
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send({"error": 500, "info": "SQL error", "htmlcat": "https://http.cat/500"})
+            })
     }
 });
 
 
 /*
-    @ ROUTE : /apiv1/counter
+    @ ROUTE : /apiv1/oldfic/counter
     @ DESC: Return the number of fics in the table fics
 */
-router.get('/counter', async (req, res, next) => {
+router.get('/oldfic/counter', (req, res, next) => {
 
-    const request = {
-        text: "SELECT COUNT(*) FROM fics"
-    };
-
-    await pool.query(request, (err, response) => {
-        if (err) throw err.stack;
-        res.send(response.rows);
-    })
+    db.any("SELECT COUNT(*) FROM fics")
+        .then((data) => {
+            res.status(200).json(data)
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).send({"error": 500, "info": "unexpected error", "htmlcat": "https://http.cat/500"})
+        })
 });
 
+/*
+    @ ROUTE : /apiv1/oldfic/:ficid/:chapitre
+    @ DESC : Return the content of the fic :id, :chapitre
+ */
+router.get('/oldfic/:ficid/:chapitre', (req, res, next) => {
+
+    if (isNaN(req.params.ficid) || isNaN(req.params.chapitre)) {
+        res.status(400).send({
+            "error": 400,
+            "info": "invalid argument in the request",
+            "htmlcat": "https://http.cat/400.jpg"
+        });
+
+    } else {
+
+        db.any("SELECT * FROM chapitres WHERE oldid= $1 AND chapitre= $2", [req.params.ficid, req.params.chapitre])
+            .then((data) => {
+                res.status(200).json(data)
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send({"error": 500, "info": "SQL error", "htmlcat": "https://http.cat/500"})
+            })
+    }
+});
 
 module.exports = router;
