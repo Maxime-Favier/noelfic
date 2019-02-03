@@ -32,7 +32,11 @@ router.get('/', async (req, res, next) => {
 router.get('/oldfic/date/:page', (req, res, next) => {
 
     if (isNaN(req.params.page)) {
-        res.status(400).send({"error": 400, "info": "invalid argument page", "htmlcat": "https://http.cat/400.jpg"})
+        res.status(400).send({
+            "error": 400,
+            "info": "invalid argument page",
+            "htmlcat": "https://http.cat/400.jpg"
+        })
     } else {
 
         db.any("SELECT * FROM fics ORDER BY date DESC LIMIT 25 OFFSET $1", [req.params.page])
@@ -41,7 +45,11 @@ router.get('/oldfic/date/:page', (req, res, next) => {
             })
             .catch((err) => {
                 console.log(err);
-                res.status(500).send({"error": 500, "info": "SQL error", "htmlcat": "https://http.cat/500"})
+                res.status(500).send({
+                    "error": 500,
+                    "info": "SQL error",
+                    "htmlcat": "https://http.cat/500"
+                })
             })
     }
 });
@@ -53,7 +61,11 @@ router.get('/oldfic/date/:page', (req, res, next) => {
 router.get('/oldfic/grade/:page', (req, res, next) => {
 
     if (isNaN(req.params.page)) {
-        res.status(400).send({"error": 400, "info": "invalid argument page", "htmlcat": "https://http.cat/400.jpg"})
+        res.status(400).send({
+            "error": 400,
+            "info": "invalid argument page",
+            "htmlcat": "https://http.cat/400.jpg"
+        })
     } else {
 
         db.any("SELECT * FROM fics ORDER BY note DESC LIMIT 25 OFFSET $1", [req.params.page])
@@ -62,7 +74,11 @@ router.get('/oldfic/grade/:page', (req, res, next) => {
             })
             .catch((err) => {
                 console.log(err);
-                res.status(500).send({"error": 500, "info": "SQL error", "htmlcat": "https://http.cat/500"})
+                res.status(500).send({
+                    "error": 500,
+                    "info": "SQL error",
+                    "htmlcat": "https://http.cat/500"
+                })
             })
     }
 });
@@ -80,7 +96,11 @@ router.get('/oldfic/counter', (req, res, next) => {
         })
         .catch((err) => {
             console.log(err);
-            res.status(500).send({"error": 500, "info": "unexpected error", "htmlcat": "https://http.cat/500"})
+            res.status(500).send({
+                "error": 500,
+                "info": "unexpected error",
+                "htmlcat": "https://http.cat/500"
+            })
         })
 });
 
@@ -105,7 +125,11 @@ router.get('/oldfic/:ficid/:chapitre', (req, res, next) => {
             })
             .catch((err) => {
                 console.log(err);
-                res.status(500).send({"error": 500, "info": "SQL error", "htmlcat": "https://http.cat/500"})
+                res.status(500).send({
+                    "error": 500,
+                    "info": "SQL error",
+                    "htmlcat": "https://http.cat/500"
+                })
             })
     }
 });
