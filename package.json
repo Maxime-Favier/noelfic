@@ -13,7 +13,7 @@
     "express": "*",
     "http-errors": "*",
     "morgan": "*",
-    "pg-promise" : "*",
+    "pg-promise": "*",
     "express-promise-router": "*"
   }
 }
