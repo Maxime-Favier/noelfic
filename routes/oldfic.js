@@ -16,7 +16,7 @@ const db = pgp(cn);
     @ Route: /oldfic/search?sorting=*str*,page=*int*
     @ Description: info on the fic
  */
-router.get("/search", (req, res, next) => {
+router.get("/search", (req, res) => {
 
     // test if page is a number
     if (isNaN(req.query.page)) {
@@ -26,11 +26,37 @@ router.get("/search", (req, res, next) => {
             "htmlcat": "https://http.cat/400.jpg"
         })
     }
-    //console.log(req.query.sorting);
-    // Case sort by date
-    else if (req.query.sorting === "date") {
+
+    let searchByTitle = false;
+    if (typeof req.query.q != 'undefined') {
+        searchByTitle = true;
+    }
+
+    if (searchByTitle) {
         // request to the database
-        db.any("SELECT * FROM fics ORDER BY date DESC LIMIT 25 OFFSET $1", [req.query.page])
+        db.any("SELECT * FROM fics WHERE position($2 in titre) > 0 " +
+            "ORDER BY CASE WHEN $3 = 'date' THEN date END, CASE WHEN $3 = 'grade' THEN note END DESC " +
+            "LIMIT 25 OFFSET $1",
+            [req.query.page, req.query.q, req.query.sorting])
+        // On success send data
+            .then((data) => {
+                res.status(200).json(data)
+            })
+            // If error return errot
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send({
+                    "error": 500,
+                    "info": "SQL error",
+                    "htmlcat": "https://http.cat/500"
+                })
+            })
+    } else {
+        // request to the database
+        db.any("SELECT * FROM fics " +
+            "ORDER BY CASE WHEN $2 = 'date' THEN date END, CASE WHEN $2 = 'grade' THEN note END DESC " +
+            "LIMIT 25 OFFSET $1",
+            [req.query.page, req.query.sorting])
         // On success send data
             .then((data) => {
                 res.status(200).json(data)
@@ -45,30 +71,9 @@ router.get("/search", (req, res, next) => {
                 })
             })
     }
-    // Case sort by user review
-    else if (req.query.sorting === "grade") {
-        // request to the database
-        db.any("SELECT * FROM fics ORDER BY note DESC LIMIT 25 OFFSET $1", [req.query.page])
-            .then((data) => {
-                res.status(200).json(data)
-            })
-            .catch((err) => {
-                console.log(err);
-                res.status(500).send({
-                    "error": 500,
-                    "info": "SQL error",
-                    "htmlcat": "https://http.cat/500"
-                })
-            })
-    } else {
-        // parameter sorting incomplete => send 400
-        res.status(400).send({
-            "error": 400,
-            "info": "invalid argument",
-            "htmlcat": "https://http.cat/400.jpg"
-        })
-    }
+
 });
+
 
 /*
     @ Route: /oldfic/search/counter
