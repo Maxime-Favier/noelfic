@@ -1,4 +1,32 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+nf_Backend\.idea/
 
-\.idea/
+nf_Backend/node_modules/
 
-node_modules/
+# dependencies
+/nf_frontend/node_modules
+/nf_frontend/.pnp
+/nf_frontend/.pnp.js
+
+# testing
+/nf_frontend/coverage
+
+# production
+/nf_frontend/build
+
+# misc
+/nf_frontend/.DS_Store
+/nf_frontend/.env.local
+/nf_frontend/.env.development.local
+/nf_frontend/.env.test.local
+/nf_frontend/.env.production.local
+
+/nf_frontend/npm-debug.log*
+/nf_frontend/yarn-debug.log*
+/nf_frontend/yarn-error.log*
+
+nf_frontend/\.idea/
+
+nf_Backend/\.idea/
+
+nfBackend/\.idea/
