@@ -1,6 +1,8 @@
 import React from 'react';
 import Jumbotron from "react-bootstrap/Jumbotron";
+
 import Researchform from '../components/researchform';
+import Resulttable from '../components/Resulttable';
 
 class Oldfic extends React.Component {
     constructor(props) {
@@ -16,8 +18,10 @@ class Oldfic extends React.Component {
     };
 
     getfilter(childState) {
-        console.log(childState);
-        this.setState({titre: childState.titre, genres: childState.genres, tri: childState.tri})
+        //console.log(childState);
+        this.setState({titre: childState.titre, genres: childState.genres, tri: childState.tri});
+        //très très sale
+        this.forceUpdate()
     }
 
 
@@ -35,7 +39,7 @@ class Oldfic extends React.Component {
 
                 <hr/>
                 <div className='mt-4'>
-                    
+                    <Resulttable titre={this.state.titre} genres={this.state.genres} tri={this.state.tri}/>
                 </div>
             </Jumbotron>
         </div>

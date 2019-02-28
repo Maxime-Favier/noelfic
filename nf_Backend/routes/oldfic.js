@@ -22,7 +22,7 @@ router.get("/search", (req, res) => {
     if (isNaN(req.query.page)) {
         res.status(400).send({
             "error": 400,
-            "info": "invalid argument date",
+            "info": "invalid argument page",
             "htmlcat": "https://http.cat/400.jpg"
         })
     }

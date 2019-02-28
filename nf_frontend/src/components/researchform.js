@@ -31,7 +31,7 @@ class Researchform extends React.Component {
 
     handleTexte = e => {
         this.setState({titre: e.target.value});
-        console.log(e.target.value)
+        //console.log(e.target.value)
     };
 
     settri = e => {
@@ -56,7 +56,7 @@ class Researchform extends React.Component {
 
     render() {
         return (
-            <Form>
+            <Form onSubmit={e => this.props.action.bind(this, this.state)}>
                 <Form.Group as={Row} controlId="formHorizontalSearch">
                     <Form.Label column sm={1}>Rechercher</Form.Label>
                     <Col sm={8}>
@@ -65,7 +65,7 @@ class Researchform extends React.Component {
                                 <InputGroup.Text id="basic-addon1"><GoSearch/></InputGroup.Text>
                             </InputGroup.Prepend>
                             <FormControl placeholder="Recherche par titre" aria-label="Recherche par titre"
-                                         aria-describedby="basic-addon1" onChange={this.handleTexte}/>
+                                         aria-describedby="basic-addon1" onChange={this.handleTexte} type="text"/>
                         </InputGroup>
                     </Col>
                 </Form.Group>
