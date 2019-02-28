@@ -2,7 +2,9 @@ import React from 'react';
 import Navbar from './components/navbar';
 import {Route, Switch} from 'react-router-dom';
 
-import Index from './pages/index'
+import Index from './pages/index';
+import Oldfic from './pages/oldfic';
+import NotFound from './pages/404'
 
 class App extends React.Component {
     constructor(props) {
@@ -18,11 +20,12 @@ class App extends React.Component {
 
                 <div>
                     <div className={"body"}>
-                        <Route exact path={'/'} component={Index}/>
-                        {/*<Switch>
-                            <Route path={'/v'} component=/>
-                            <Route path={'/v'} component/>
-                        </Switch>*/}
+
+                        <Switch>
+                            <Route exact path={'/'} component={Index}/>
+                            <Route path={'/oldfic'} component={Oldfic}/>
+                            <Route component={NotFound}/>
+                        </Switch>
                     </div>
                 </div>
             </div>
