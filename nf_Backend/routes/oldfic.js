@@ -34,12 +34,13 @@ router.get("/search", (req, res) => {
 
     if (searchByTitle) {
         // request to the database
-        db.any("SELECT * FROM fics WHERE position($2 in titre) > 0 " +
+        db.any("SELECT *, count(*) over() FROM fics WHERE position($2 in titre) > 0 " +
             "ORDER BY CASE WHEN $3 = 'date' THEN date END, CASE WHEN $3 = 'grade' THEN note END DESC " +
             "LIMIT 25 OFFSET $1",
             [req.query.page, req.query.q, req.query.sorting])
         // On success send data
             .then((data) => {
+                //console.log(data)
                 res.status(200).json(data)
             })
             // If error return errot
@@ -53,12 +54,13 @@ router.get("/search", (req, res) => {
             })
     } else {
         // request to the database
-        db.any("SELECT * FROM fics " +
+        db.any("SELECT  id, oldid, titre, auteurs, genre, chapitres, note, date, count(*) over() FROM fics " +
             "ORDER BY CASE WHEN $2 = 'date' THEN date END, CASE WHEN $2 = 'grade' THEN note END DESC " +
             "LIMIT 25 OFFSET $1",
             [req.query.page, req.query.sorting])
         // On success send data
-            .then((data) => {
+            .then((data, params) => {
+                console.log(params);
                 res.status(200).json(data)
             })
             // If error return errot
@@ -74,6 +76,19 @@ router.get("/search", (req, res) => {
 
 });
 
+router.get('/recherche',(req, res) => {
+    // test if page is a number
+    if (isNaN(req.query.page)) {
+        res.status(400).send({
+            "error": 400,
+            "info": "invalid argument page",
+            "htmlcat": "https://http.cat/400.jpg"
+        })
+    }
+
+    db.any("IF ($1 IS NOT NULL ")
+
+});
 
 /*
     @ Route: /oldfic/search/counter

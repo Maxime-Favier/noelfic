@@ -4,7 +4,8 @@ import {Route, Switch} from 'react-router-dom';
 
 import Index from './pages/index';
 import Oldfic from './pages/oldfic';
-import NotFound from './pages/404'
+import NotFound from './pages/404';
+import Ficreader from './pages/ficreader'
 
 class App extends React.Component {
     constructor(props) {
@@ -23,7 +24,8 @@ class App extends React.Component {
 
                         <Switch>
                             <Route exact path={'/'} component={Index}/>
-                            <Route path={'/oldfic'} component={Oldfic}/>
+                            <Route exact path={'/oldfic'} component={Oldfic}/>
+                            <Route path={'/oldfic/:ficid/:chapter'} component={Ficreader} />
                             <Route component={NotFound}/>
                         </Switch>
                     </div>
