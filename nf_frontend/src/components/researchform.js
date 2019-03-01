@@ -26,6 +26,7 @@ class Researchform extends React.Component {
         this.setgenre = this.setgenre.bind(this);
         this.handleTexte = this.handleTexte.bind(this);
         this.settri = this.settri.bind(this);
+        this.submitForm = this.submitForm.bind(this);
     }
 
 
@@ -54,9 +55,15 @@ class Researchform extends React.Component {
         //console.log(options);
     }
 
+    submitForm(event){
+        this.props.action(this.state);
+        event.preventDefault();
+
+    }
+
     render() {
         return (
-            <Form onSubmit={e => this.props.action.bind(this, this.state)}>
+            <Form onSubmit={e => this.submitForm(e)}>
                 <Form.Group as={Row} controlId="formHorizontalSearch">
                     <Form.Label column sm={1}>Rechercher</Form.Label>
                     <Col sm={8}>
@@ -76,8 +83,8 @@ class Researchform extends React.Component {
                         <div key='custom-inline-checkbox' className="mt-2 ml-4">
                             <React.Fragment>
                                 {
-                                    genre.map(item => (
-                                        <Checkbox id={item.id} label={item.label} key={item.id}
+                                    genre.map((item, key) => (
+                                        <Checkbox id={item.id} label={item.label} key={key}
                                                   onChange={this.setgenre.bind(this)}/>
                                     ))
                                 }
@@ -100,7 +107,7 @@ class Researchform extends React.Component {
                     </Row>
                 </Form.Group>
 
-                <Button variant="primary" onClick={this.props.action.bind(this, this.state)}>Rechercher</Button>
+                <Button type="submit" variant="primary">Rechercher</Button>
             </Form>
         );
     };

@@ -25,8 +25,8 @@ const navbar = () => {
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mr-auto">
                     <LinkContainer to={"/oldfic"} ><Nav.Link>Anciennes fic</Nav.Link></LinkContainer>
-                    <Nav.Link disabled={true}>Risitas</Nav.Link>
-                    <Nav.Link disabled={true}>Nouvelles fic</Nav.Link>
+                    {/*<Nav.Link disabled={true}>Risitas</Nav.Link>
+                    <Nav.Link disabled={true}>Nouvelles fic</Nav.Link>*/}
                 </Nav>
                 {/*<Form inline>
                     <FormControl type="text" placeholder="Search" className="mr-sm-2"/>

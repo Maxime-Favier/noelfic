@@ -18,15 +18,28 @@ class Resulttable extends React.Component {
         this.getResult = this.getResult.bind(this);
     }
 
-    componentWillReceiveProps() {
+    ResulttableConfig = [
+        {classname : "col-4", label: "Titre"},
+        {classname : "col-2", label: "Auteur"},
+        {classname : "col-2", label: "Genre"},
+        {classname : "col-1", label: "date de maj"},
+        {classname : "col-1", label: "Note"}
+    ];
+
+    componentDidMount() {
+        // call result on mount
         this.getResult();
     }
 
-    componentDidMount() {
-        this.getResult();
+    componentDidUpdate(prevProps) {
+        // update when states changes
+        if(prevProps.titre !== this.props.titre || prevProps.tri !== this.props.tri){
+            this.getResult();
+        }
     }
 
     getResult() {
+        // send request to the api
         API.get('/oldfic/search', {
             params: {
                 page: this.state.page,
@@ -35,41 +48,35 @@ class Resulttable extends React.Component {
             }
         })
             .then(response => {
-                console.log(response);
-                this.setState({result: response.data})
+                // On success
+                this.setState({result: response.data});
             })
             .catch(error => {
+                // On error
                 console.log(error);
             });
-
-        //très très sale
-        this.forceUpdate()
     }
 
     render() {
         return (
-            <div className="mr-5 ml-5 mt-5">
-                <Table size="sm">
+            <div className="mr-5 ml-5 mt-5 ">
+                <Table size="sm" responsive="true" >
                     <thead>
                     <tr>
-                        <th className='col-5'>Titre</th>
-                        <th className="col-2">Auteur</th>
-                        <th className="col-1">Genre</th>
-                        <th className="col-1">date de maj</th>
-                        <th className="col-1">Note</th>
+                        {
+                            this.ResulttableConfig.map((config, key) =>(
+                                <th className={config.classname} key={key}>{config.label}</th>
+                            ))
+                        }
                     </tr>
 
                     </thead>
                     <tbody>
-
-                    <React.Fragment>
                         {
                             this.state.result.map((row, key) => (
                                 <ResultRow titre={row.titre} auteur={row.auteurs} genre={row.genre} maj={row.date} note={row.note} key={key}/>
                             ))
                         }
-                    </React.Fragment>
-
                     </tbody>
                 </Table>
             </div>

@@ -1,68 +1,55 @@
 const genres = [
     {
         id: 1,
-        label: "Action",
-        api:"Action"
+        label: "Action"
     },
     {
         id: 2,
-        label: "BD",
-        api: "BD"
+        label: "BD"
     },
     {
         id: 3,
-        label: "Concours",
-        api: "Concours"
+        label: "Concours"
     },
     {
         id: 4,
-        label: "Fantastique",
-        api: "Fantastique"
+        label: "Fantastique"
     },
     {
         id: 5,
-        label: "Horreur",
-        api: "Horreur"
+        label: "Horreur"
     },
     {
         id: 6,
-        label: "Moins de 15 ans",
-        api: "Moinsde15ans"
+        label: "Moins de 15 ans"
     },
     {
         id: 7,
-        label: "Nawak",
-        api: "Nawak"
+        label: "Nawak"
     },
     {
         id: 8,
-        label: "No-Fake",
-        api: "NoFake"
+        label: "No-Fake"
     },
     {
         id: 9,
-        label: "Polar",
-        api: "Polar"
+        label: "Polar"
     },
     {
         id: 10,
-        label: "Réaliste",
-        api: "Realiste"
+        label: "Réaliste"
     },
     {
         id: 11,
-        label: "Sayks",
-        api: "Sayks"
+        label: "Sayks"
     },
     {
         id: 12,
-        label: "Science-Fiction",
-        api: "ScienceFiction"
+        label: "Science-Fiction"
     },
     {
         id: 13,
-        label: "Sentimental",
-        api: "Sentimental"
+        label: "Sentimental"
     },
 
 ];
