@@ -1,25 +1,44 @@
 import React from 'react';
 import Jumbotron from "react-bootstrap/Jumbotron";
 import Chapitre from "../components/chapitre";
+import Pageswitch from "../components/pagination";
 
 class Ficreader extends React.Component{
 
-    state = {
-        title: "Loading",
-        auteur: "Loading",
-        genre: "Loading",
-        currentchap : 1,
-        maxchapter: null,
-        ficid: 42
-    };
+    constructor(props){
+        super(props);
+
+        this.state = {
+            title: "Loading",
+            auteur: "Loading",
+            genre: "Loading",
+            currentPage: 1,
+            totalPages: 21,
+            ficid: 1
+        };
+
+        this.getficinfo = this.getficinfo.bind(this)
+    }
+
+
 
     componentDidMount() {
+        this.setState({ficid: this.props.match.params.ficid});
         this.getficinfo();
     }
 
     getficinfo(){
-
+        //console.log(this.props.match.params.ficid);
+        //this.setState({ficid: this.props.match.params.ficid})
     }
+
+    onPageChanged = data => {
+        const { currentPage, totalPages } = data;
+
+        //const offset = (currentPage - 1) * pageLimit;
+
+        this.setState({ currentPage, totalPages });
+    };
 
     render() {
         return(<div>
@@ -31,7 +50,10 @@ class Ficreader extends React.Component{
                     Genre: <br/>
                 </p>
                 <hr/>
-                <Chapitre ficid={this.state.ficid}/>
+                <div>
+                    <Pageswitch totalRecords={this.state.totalPages} pageLimit={1} pageNeighbours={2} onPageChanged={this.onPageChanged}/>
+                    <Chapitre ficid={this.state.ficid} chapitre={this.state.currentPage}/>
+                </div>
             </Jumbotron>
         </div>);
     }

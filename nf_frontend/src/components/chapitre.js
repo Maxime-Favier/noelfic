@@ -14,7 +14,7 @@ class Chapitre extends React.Component {
     getchapter(ficid, chapitre) {
         API.get(`/oldfic/${ficid}/${chapitre}`)
             .then(response => {
-                console.log(response.data[0]);
+                //console.log(response.data[0]);
                 this.setState({content: response.data[0].content, auteur: response.data[0].auteur, chapTitle: response.data[0].title})
             })
             .catch(err => {
@@ -23,13 +23,17 @@ class Chapitre extends React.Component {
     }
 
     componentDidMount() {
-        this.getchapter(25,1)
+        this.getchapter(this.props.ficid,this.props.chapitre);
+    }
+
+    componentDidUpdate(prevProps) {
+        if(prevProps.ficid !== this.props.ficid || prevProps.chapitre !== this.props.chapitre){
+            this.getchapter(this.props.ficid, this.props.chapitre);
+        }
     }
 
     render() {
-        return(<div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.content)}}/>
-
-            )
+        return(<div className="container" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.content)}}/>)
     }
 }
 export default Chapitre;

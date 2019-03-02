@@ -25,7 +25,7 @@ class App extends React.Component {
                         <Switch>
                             <Route exact path={'/'} component={Index}/>
                             <Route exact path={'/oldfic'} component={Oldfic}/>
-                            <Route path={'/oldfic/:ficid/:chapter'} component={Ficreader} />
+                            <Route path={'/oldfic/:ficid/'} component={Ficreader} />
                             <Route component={NotFound}/>
                         </Switch>
                     </div>

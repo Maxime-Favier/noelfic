@@ -59,8 +59,8 @@ class Resulttable extends React.Component {
 
     render() {
         return (
-            <div className="mr-5 ml-5 mt-5 ">
-                <Table size="sm" responsive="true" >
+            <div className="mt-5 ">
+                <Table size="sm" responsive="true" striped>
                     <thead>
                     <tr>
                         {
@@ -74,7 +74,7 @@ class Resulttable extends React.Component {
                     <tbody>
                         {
                             this.state.result.map((row, key) => (
-                                <ResultRow titre={row.titre} auteur={row.auteurs} genre={row.genre} maj={row.date} note={row.note} key={key}/>
+                                <ResultRow titre={row.titre} auteur={row.auteurs} genre={row.genre} maj={row.date} note={row.note} key={key} oldid={row.oldid}/>
                             ))
                         }
                     </tbody>

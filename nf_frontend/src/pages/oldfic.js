@@ -38,7 +38,7 @@ class Oldfic extends React.Component {
                         <Researchform action={this.getfilter}/>
                     </div>
                     <hr/>
-                    <div className='mt-4'>
+                    <div className='mt-4 container'>
                         <Resulttable titre={this.state.titre} genres={this.state.genres} tri={this.state.tri}/>
                     </div>
                 </Jumbotron>

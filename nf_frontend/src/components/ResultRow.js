@@ -1,15 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Link from 'react-router-dom/Link'
+//import LinkContainer from 'react-router-bootstrap/lib/LinkContainer';
 
 
-const ResultRow = ({titre, auteur, genre, maj, note}) => (
+const ResultRow = ({titre, auteur, genre, maj, note, oldid}) => (
+
     <tr>
-        <td>{titre}</td>
+
+        <td><Link to={`/oldfic/${oldid}`}>{titre} </Link></td>
         <td>{auteur}</td>
         <td>{genre}</td>
         <td>{maj}</td>
         <td>{note}</td>
     </tr>
+
 );
 
 ResultRow.propTypes = {
@@ -17,7 +22,8 @@ ResultRow.propTypes = {
     auteur: PropTypes.string.isRequired,
     genre: PropTypes.string.isRequired,
     maj: PropTypes.string.isRequired,
-    note: PropTypes.number
+    note: PropTypes.number,
+    oldid: PropTypes.number
 };
 
 export default ResultRow;
