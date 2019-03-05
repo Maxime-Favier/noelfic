@@ -45,6 +45,7 @@ class Pageswitch extends Component {
     }
 
     gotoPage = page => {
+        //console.log("goto page "+ page);
         const {onPageChanged = f => f} = this.props;
 
         const currentPage = Math.max(0, Math.min(page, this.totalPages));
@@ -76,6 +77,7 @@ class Pageswitch extends Component {
 
     handlePrev = evt => {
         evt.preventDefault();
+        console.log("prev");
         if (this.state.currentPage !== 1) {
             this.gotoPage(this.state.currentPage - 1)
         }
@@ -83,6 +85,7 @@ class Pageswitch extends Component {
 
     handleNext = evt => {
         evt.preventDefault();
+        console.log("next");
         //console.log(this.state.totalPages);
         if(this.state.currentPage !== this.state.totalPages) {
             //console.log("here");

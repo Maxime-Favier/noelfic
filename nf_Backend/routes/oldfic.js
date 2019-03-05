@@ -12,82 +12,62 @@ const cn = {
 const db = pgp(cn);
 
 
-/*
-    @ Route: /oldfic/search?sorting=*str*,page=*int*
-    @ Description: info on the fic
- */
-router.get("/search", (req, res) => {
+router.get('/search', (req, res) => {
 
-    // test if page is a number
-    if (isNaN(req.query.page)) {
-        res.status(400).send({
-            "error": 400,
-            "info": "invalid argument page",
-            "htmlcat": "https://http.cat/400.jpg"
-        })
-    }
+    const serverError = {"error": 500, "info": "SQL error", "htmlcat": "https://http.cat/500"};
+    const clientError = {"error": 400, "info": "invalid argument", "htmlcat": "https://http.cat/400.jpg"};
+    const genreList = [{id: 1, label: "Action"}, {id: 2, label: "BD"}, {id: 3, label: "Concours"},
+        {id: 4, label: "Fantastique"}, {id: 5, label: "Horreur"}, {id: 6, label: "Moins de 15 ans"},
+        {id: 7, label: "Nawak"}, {id: 8, label: "No-Fake"}, {id: 9, label: "Polar"}, {id: 10, label: "Réaliste"},
+        {id: 11, label: "Sayks"}, {id: 12, label: "Science-Fiction"}, {id: 13, label: "Sentimental"},];
 
-    let searchByTitle = false;
-    if (typeof req.query.q != 'undefined') {
-        searchByTitle = true;
-    }
 
-    if (searchByTitle) {
-        // request to the database
-        db.any("SELECT *, count(*) over() FROM fics WHERE position($2 in titre) > 0 " +
-            "ORDER BY CASE WHEN $3 = 'date' THEN date END, CASE WHEN $3 = 'grade' THEN note END DESC " +
-            "LIMIT 25 OFFSET $1",
-            [req.query.page, req.query.q, req.query.sorting])
-        // On success send data
-            .then((data) => {
-                //console.log(data)
-                res.status(200).json(data)
-            })
-            // If error return errot
-            .catch((err) => {
-                console.log(err);
-                res.status(500).send({
-                    "error": 500,
-                    "info": "SQL error",
-                    "htmlcat": "https://http.cat/500"
+    // Recherche by oldid
+    if (typeof req.query.id === "string") {
+
+        if (isNaN(req.query.id)) {
+            res.status(400).send(clientError)
+        } else {
+            // research by id
+            db.any("SELECT * FROM fics WHERE oldid=$1", req.query.id)
+                .then(data => res.status(200).json(data))
+                .catch(err => {
+                    console.log(err);
+                    res.status(500).send(serverError)
                 })
-            })
+        }
     } else {
-        // request to the database
-        db.any("SELECT  id, oldid, titre, auteurs, genre, chapitres, note, date, count(*) over() FROM fics " +
-            "ORDER BY CASE WHEN $2 = 'date' THEN date END, CASE WHEN $2 = 'grade' THEN note END DESC " +
-            "LIMIT 25 OFFSET $1",
-            [req.query.page, req.query.sorting])
-        // On success send data
-            .then((data, params) => {
-                console.log(params);
-                res.status(200).json(data)
-            })
-            // If error return errot
-            .catch((err) => {
-                console.log(err);
-                res.status(500).send({
-                    "error": 500,
-                    "info": "SQL error",
-                    "htmlcat": "https://http.cat/500"
-                })
-            })
+        // check sorting, page, genre parameter exist
+        if (typeof req.query.sorting != "string" || isNaN(req.query.page) || JSON.parse(req.query.genre).constructor !== Array) {
+            res.status(400).send(clientError);
+        } else {
+
+            // parse genre list
+            let genres = [];
+            JSON.parse(req.query.genre).forEach(item => {
+                genres.push(genreList[item - 1].label)
+            });
+
+            // research with title
+            if (typeof req.query.q != 'undefined') {
+                db.any("SELECT * FROM fics WHERE position($1 IN titre) > 0 AND genre IN ($2:list) ORDER BY CASE WHEN $3 = 'date' THEN date END, CASE WHEN $3 = 'grade' THEN note END DESC LIMIT 25 OFFSET $4 * 25",
+                    [req.query.q, genres, req.query.sorting, req.query.page])
+                    .then(data => res.status(200).json(data))
+                    .catch(err => {
+                        console.log(err);
+                        res.status(500).send(serverError)
+                    })
+            } else {
+                db.any("SELECT * FROM fics WHERE genre IN ($1:list) ORDER BY CASE WHEN $2 = 'date' THEN date END, CASE WHEN $2 = 'grade' THEN note END DESC LIMIT 25 OFFSET $3 * 25",
+                    [genres, req.query.sorting, req.query.page])
+                    .then(data => res.status(200).json(data))
+                    .catch(err => {
+                        console.log(err);
+                        res.status(500).send(serverError)
+                    })
+            }
+        }
     }
-
-});
-
-router.get('/recherche',(req, res) => {
-    // test if page is a number
-    if (isNaN(req.query.page)) {
-        res.status(400).send({
-            "error": 400,
-            "info": "invalid argument page",
-            "htmlcat": "https://http.cat/400.jpg"
-        })
-    }
-
-    db.any("IF ($1 IS NOT NULL ")
-
 });
 
 /*
@@ -96,18 +76,43 @@ router.get('/recherche',(req, res) => {
  */
 router.get("/search/counter", (req, res) => {
     // request the number of fic to the database
-    db.any("SELECT COUNT(*) FROM fics")
-        .then((data) => {
-            res.status(200).json(data)
-        })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).send({
-                "error": 500,
-                "info": "unexpected error",
-                "htmlcat": "https://http.cat/500"
-            })
-        })
+
+    const serverError = {"error": 500, "info": "SQL error", "htmlcat": "https://http.cat/500"};
+    const clientError = {"error": 400, "info": "invalid argument", "htmlcat": "https://http.cat/400.jpg"};
+    const genreList = [{id: 1, label: "Action"}, {id: 2, label: "BD"}, {id: 3, label: "Concours"},
+        {id: 4, label: "Fantastique"}, {id: 5, label: "Horreur"}, {id: 6, label: "Moins de 15 ans"},
+        {id: 7, label: "Nawak"}, {id: 8, label: "No-Fake"}, {id: 9, label: "Polar"}, {id: 10, label: "Réaliste"},
+        {id: 11, label: "Sayks"}, {id: 12, label: "Science-Fiction"}, {id: 13, label: "Sentimental"},];
+
+    if (typeof req.query.sorting != "string" || isNaN(req.query.page) || JSON.parse(req.query.genre).constructor !== Array) {
+        res.status(400).send(clientError);
+    } else {
+
+        // parse genre list
+        let genres = [];
+        JSON.parse(req.query.genre).forEach(item => {
+            genres.push(genreList[item - 1].label)
+        });
+
+        // research with title
+        if (typeof req.query.q != 'undefined') {
+            db.any("SELECT COUNT(*) FROM fics WHERE position($1 IN titre) > 0 AND genre IN ($2:list) ORDER BY CASE WHEN $3 = 'date' THEN date END, CASE WHEN $3 = 'grade' THEN note END DESC LIMIT 25 OFFSET $4 * 25",
+                [req.query.q, genres, req.query.sorting, req.query.page])
+                .then(data => res.status(200).json(data))
+                .catch(err => {
+                    console.log(err);
+                    res.status(500).send(serverError)
+                })
+        } else {
+            db.any("SELECT COUNT(*) FROM fics WHERE genre IN ($1:list) ORDER BY CASE WHEN $2 = 'date' THEN date END, CASE WHEN $2 = 'grade' THEN note END DESC LIMIT 25 OFFSET $3 * 25",
+                [genres, req.query.sorting, req.query.page])
+                .then(data => res.status(200).json(data))
+                .catch(err => {
+                    console.log(err);
+                    res.status(500).send(serverError)
+                })
+        }
+    }
 });
 
 /*

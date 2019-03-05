@@ -28,6 +28,8 @@ class Oldfic extends React.Component {
     }
 
 
+
+
     render() {
         return (<div>
                 <Jumbotron>
@@ -39,7 +41,7 @@ class Oldfic extends React.Component {
                     </div>
                     <hr/>
                     <div className='mt-4 container'>
-                        <Resulttable titre={this.state.titre} genres={this.state.genres} tri={this.state.tri}/>
+                        <Resulttable titre={this.state.titre} genre={this.state.genres} tri={this.state.tri}/>
                     </div>
                 </Jumbotron>
             </div>

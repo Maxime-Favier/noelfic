@@ -1,9 +1,9 @@
 import React from 'react'
 import Table from "react-bootstrap/Table";
+import propTypes from 'prop-types'
 
-//import axios from 'axios';
-import API from '../backendConfig/api'
-import ResultRow from '../components/ResultRow';
+import Pageswitch from "../components/pagination";
+import Searchtablebody from './searchtablebody';
 
 
 class Resulttable extends React.Component {
@@ -11,77 +11,58 @@ class Resulttable extends React.Component {
         super(props);
 
         this.state = {
-            page: 0,
-            result: []
+            currentPage: 1,
+            totalPages: 100
         };
 
-        this.getResult = this.getResult.bind(this);
     }
 
     ResulttableConfig = [
-        {classname : "col-4", label: "Titre"},
-        {classname : "col-2", label: "Auteur"},
-        {classname : "col-2", label: "Genre"},
-        {classname : "col-1", label: "date de maj"},
-        {classname : "col-1", label: "Note"}
+        {classname: "col-4", label: "Titre"},
+        {classname: "col-2", label: "Auteur"},
+        {classname: "col-2", label: "Genre"},
+        {classname: "col-1", label: "date de maj"},
+        {classname: "col-1", label: "Note"}
     ];
 
-    componentDidMount() {
-        // call result on mount
-        this.getResult();
-    }
 
-    componentDidUpdate(prevProps) {
-        // update when states changes
-        if(prevProps.titre !== this.props.titre || prevProps.tri !== this.props.tri){
-            this.getResult();
-        }
-    }
-
-    getResult() {
-        // send request to the api
-        API.get('/oldfic/search', {
-            params: {
-                page: this.state.page,
-                sorting: this.props.tri,
-                q: this.props.titre
-            }
-        })
-            .then(response => {
-                // On success
-                this.setState({result: response.data});
-            })
-            .catch(error => {
-                // On error
-                console.log(error);
-            });
-    }
+    onPageChanged = data => {
+        const {currentPage, totalPages} = data;
+        console.log("on page changed " + currentPage);
+        this.setState({currentPage, totalPages});
+    };
 
     render() {
         return (
-            <div className="mt-5 ">
+            <div className="mt-5">
+                <div className="ml-auto mr-auto">
+                    <Pageswitch totalRecords={this.state.totalPages} pageLimit={1} pageNeighbours={2}
+                                onPageChanged={this.onPageChanged}/>
+                </div>
                 <Table size="sm" responsive="true" striped>
                     <thead>
                     <tr>
                         {
-                            this.ResulttableConfig.map((config, key) =>(
+                            this.ResulttableConfig.map((config, key) => (
                                 <th className={config.classname} key={key}>{config.label}</th>
                             ))
                         }
                     </tr>
-
                     </thead>
-                    <tbody>
-                        {
-                            this.state.result.map((row, key) => (
-                                <ResultRow titre={row.titre} auteur={row.auteurs} genre={row.genre} maj={row.date} note={row.note} key={key} oldid={row.oldid}/>
-                            ))
-                        }
-                    </tbody>
+
+                    <Searchtablebody page={this.state.currentPage} sorting={this.props.tri} genre={this.props.genre}
+                                     q={this.props.titre}/>
+
                 </Table>
             </div>
         )
     }
 }
+
+Resulttable.propTypes = {
+    titre: propTypes.string,
+    genre: propTypes.string.isRequired,
+    tri: propTypes.string.isRequired,
+};
 
 export default Resulttable;

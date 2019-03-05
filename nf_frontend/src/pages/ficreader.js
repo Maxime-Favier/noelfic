@@ -13,7 +13,7 @@ class Ficreader extends React.Component{
             auteur: "Loading",
             genre: "Loading",
             currentPage: 1,
-            totalPages: 21,
+            totalPages: 130,
             ficid: 1
         };
 
@@ -21,7 +21,7 @@ class Ficreader extends React.Component{
     }
 
 
-
+    //TODO: 2309 - 73
     componentDidMount() {
         this.setState({ficid: this.props.match.params.ficid});
         this.getficinfo();
