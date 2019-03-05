@@ -28,7 +28,7 @@ class Resulttable extends React.Component {
 
     onPageChanged = data => {
         const {currentPage, totalPages} = data;
-        console.log("on page changed " + currentPage);
+        //console.log("on page changed " + currentPage);
         this.setState({currentPage, totalPages});
     };
 
@@ -61,7 +61,7 @@ class Resulttable extends React.Component {
 
 Resulttable.propTypes = {
     titre: propTypes.string,
-    genre: propTypes.string.isRequired,
+    genre: propTypes.array.isRequired,
     tri: propTypes.string.isRequired,
 };
 

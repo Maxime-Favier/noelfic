@@ -28,8 +28,6 @@ class Oldfic extends React.Component {
     }
 
 
-
-
     render() {
         return (<div>
                 <Jumbotron>
@@ -48,4 +46,5 @@ class Oldfic extends React.Component {
         );
     };
 }
+
 export default Oldfic;

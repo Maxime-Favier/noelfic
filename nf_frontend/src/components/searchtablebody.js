@@ -19,6 +19,7 @@ class searchtablebody extends React.Component {
 
     componentDidUpdate(prevProps) {
         // update when states changes
+        // TODO reset to 1
         if (prevProps.q !== this.props.q || prevProps.sorting !== this.props.sorting || prevProps.genre !== this.props.genre || prevProps.page !== this.props.page) {
             //this.setState({page: 0});
             //console.log("reset to 1");
@@ -27,7 +28,8 @@ class searchtablebody extends React.Component {
     }
 
     getResult() {
-        console.log("get the page number "+ this.props.page);
+        // get the content of the chap
+        //console.log("get the page number "+ this.props.page);
         API.get(`/oldfic/search?genre=[${this.props.genre}]`, {
             params: {
                 page: this.props.page -1,

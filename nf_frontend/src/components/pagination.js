@@ -77,7 +77,7 @@ class Pageswitch extends Component {
 
     handlePrev = evt => {
         evt.preventDefault();
-        console.log("prev");
+        //console.log("prev");
         if (this.state.currentPage !== 1) {
             this.gotoPage(this.state.currentPage - 1)
         }
@@ -85,7 +85,7 @@ class Pageswitch extends Component {
 
     handleNext = evt => {
         evt.preventDefault();
-        console.log("next");
+        //console.log("next");
         //console.log(this.state.totalPages);
         if(this.state.currentPage !== this.state.totalPages) {
             //console.log("here");
