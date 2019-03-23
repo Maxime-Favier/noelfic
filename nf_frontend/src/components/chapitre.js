@@ -1,7 +1,7 @@
 import React from 'react';
 import API from '../backendConfig/api';
 import DOMPurify from 'dompurify';
-import propTypes from 'prop-types'
+//import propTypes from 'prop-types';
 
 
 class Chapitre extends React.Component {
@@ -28,17 +28,22 @@ class Chapitre extends React.Component {
     }
 
     componentDidMount() {
-        this.getchapter(this.props.ficid, this.props.chapitre);
+        this.getchapter(this.props.match.params.ficid, this.props.match.params.chapid);
+        //console.log(this.props.match.params.ficid);
+        //console.log(this.props);
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.ficid !== this.props.ficid || prevProps.chapitre !== this.props.chapitre) {
-            this.getchapter(this.props.ficid, this.props.chapitre);
+        //console.log(prevProps);
+        if (prevProps.match.params.ficid !== this.props.match.params.ficid|| prevProps.match.params.chapid !== this.props.match.params.chapid) {
+            this.getchapter(this.props.match.params.ficid, this.props.match.params.chapid);
+            //console.log("update")
         }
     }
 
     render() {
         return (<div>
+
             <div className="text-center">
                 <h2>{this.state.chapTitle}</h2>
             </div>
@@ -47,9 +52,9 @@ class Chapitre extends React.Component {
     }
 }
 
-Chapitre.propTypes = {
+/*Chapitre.propTypes = {
     ficid: propTypes.string,
     chapitre: propTypes.number.isRequired
-};
+};*/
 
 export default Chapitre;

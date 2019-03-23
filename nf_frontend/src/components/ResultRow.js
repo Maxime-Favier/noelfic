@@ -8,7 +8,7 @@ const ResultRow = ({titre, auteur, genre, maj, note, oldid}) => (
 
     <tr>
 
-        <td><Link to={`/oldfic/${oldid}`}>{titre} </Link></td>
+        <td><Link to={`/oldfic/${oldid}/1`}>{titre} </Link></td>
         <td>{auteur}</td>
         <td>{genre}</td>
         <td>{maj}</td>

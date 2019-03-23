@@ -1,10 +1,11 @@
 import React from 'react';
 import Jumbotron from "react-bootstrap/Jumbotron";
 import Chapitre from "../components/chapitre";
-import Pageswitch from "../components/pagination";
+import Pageswitch from "../components/chappagination";
 import API from '../backendConfig/api'
+import {Route} from "react-router-dom";
 
-class Ficreader extends React.Component {
+class TestReader extends React.Component {
 
     constructor(props) {
         super(props);
@@ -13,14 +14,14 @@ class Ficreader extends React.Component {
             title: "Loading",
             auteur: "Loading",
             genre: "Loading",
-            currentPage: 1,
+            currentPage: window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1),
             totalPages: null,
+
         };
 
         this.getficinfo = this.getficinfo.bind(this)
     }
 
-    //TODO: 2309 - 73
     //TODO dernier chap cisla bdd
 
     componentDidMount() {
@@ -28,11 +29,8 @@ class Ficreader extends React.Component {
     }
 
     getficinfo() {
-        //console.log(this.props.match.params.ficid);
-        //this.setState({ficid: this.props.match.params.ficid})
         API.get('/oldfic/search', {params: {id: this.props.match.params.ficid}})
             .then(response => {
-                //console.log(response.data[0].chapitres);
                 this.setState({
                     title: response.data[0].titre,
                     auteur: response.data[0].auteurs,
@@ -46,9 +44,11 @@ class Ficreader extends React.Component {
     }
 
     onPageChanged = data => {
-        const {currentPage, totalPages} = data;
-        this.setState({currentPage, totalPages});
+        //const {currentPage, totalPages} = data;
+        //this.setState({currentPage, totalPages});
+        //console.log(data)
     };
+
 
     render() {
         return (<div>
@@ -63,14 +63,16 @@ class Ficreader extends React.Component {
                 <div>
                     {this.state.totalPages === null ? <br/> :
                         <Pageswitch totalRecords={this.state.totalPages} pageLimit={1} pageNeighbours={2}
-                                    onPageChanged={this.onPageChanged}/>
+                                    onPageChanged={this.onPageChanged} ficid={this.props.match.params.ficid}
+                                    currentpage={this.state.currentPage}/>
                     }
+                    <Route path={'/oldfic/:ficid/:chapid'} component={Chapitre}/>
 
-                    <Chapitre ficid={this.props.match.params.ficid} chapitre={this.state.currentPage}/>
                 </div>
             </Jumbotron>
         </div>);
     }
 }
 
-export default Ficreader;
+// <Chapitre ficid={this.props.match.params.ficid} chapitre={this.state.currentPage}/>
+export default TestReader;
